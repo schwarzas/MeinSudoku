@@ -91,7 +91,7 @@ public class SudokuStandard {
                 sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().remove(neuerEintrag);
             }
             if(!alterEintrag.equals(" ")){
-                sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().remove(alterEintrag);
+                sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().add(alterEintrag);
             }
         }
     }

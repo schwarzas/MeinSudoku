@@ -115,6 +115,7 @@ public class Controller implements Initializable {
 
             Label leeren = new Label("leeren");
             leeren.setOnMouseReleased(mouseEvent -> modell.setzeEintrag(label.getId()," "));
+            leeren.setStyle("-fx-background-color: red");
             gridPaneMoeglicheEintraege.add(leeren, 0, counter + 1);
             gridPaneMoeglicheEintraege.setColumnSpan(leeren, BREITE_SUBSPIELFELD);
             leeren.setPrefSize(60, 20);
@@ -129,7 +130,8 @@ public class Controller implements Initializable {
             }
 
         });
-        //TODO Changelistener ans label
+        //label an textProperty binden.
+        label.textProperty().bind(modell.getSpielfeld()[i][j].getEintragPoperty());
         return label;
     }
 

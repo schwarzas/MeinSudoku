@@ -1,5 +1,7 @@
 package grundspiel;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
@@ -8,7 +10,8 @@ public class SudokuEintrag {
     /**
      * Eintrag, der auf das Feld gesetzt ist.
      */
-    private String eintrag = " ";
+    private StringProperty eintrag = new SimpleStringProperty( " ");
+
     /**
      * gibt an, ob eine Entitaet zur Aufgabenstellung gehört. True bedeutet, dass die Entität vom Spieler nicht geändert
      * werden darf.
@@ -48,7 +51,11 @@ public class SudokuEintrag {
     }
 
     public String getEintrag() {
-        return eintrag;
+        return eintrag.get();
+    }
+
+    public void setEintrag(final String eintrag) {
+        this.eintrag.set(eintrag);
     }
 
     public boolean isEintragKonstant() {
@@ -59,8 +66,12 @@ public class SudokuEintrag {
         this.eintragKonstant = eintragKonstant;
     }
 
-    public void setEintrag(String eintrag) {
-        this.eintrag = eintrag;
+    public StringProperty getEintragPoperty(){
+        return eintrag;
+    }
+
+    public void setEintragProperty(final StringProperty eintrag){
+        this.eintrag=eintrag;
     }
 
     public ArrayList<String> getMoeglicheEintraege() {
