@@ -100,10 +100,16 @@ public class Controller implements Initializable {
                     String wert = Integer.toString(wertEintragenEintrag);
                     if (moeglicheEintraege.contains(wert)) {
                         tmpLabel.setText(wert);
-                        tmpLabel.setOnMouseReleased(mouseEvent ->  modell.setzeEintrag(label.getId(),tmpLabel.getText()));
+                        tmpLabel.setOnMouseReleased(mouseEvent ->
+                        {
+                            modell.setzeEintrag(label.getId(),tmpLabel.getText());
+                            popupMoeglicheEintraege.hide();
+                        });
                     } else {
                         tmpLabel.setText(" ");
+                        tmpLabel.setOnMouseReleased(mouseEven2 -> popupMoeglicheEintraege.hide());
                     }
+
                     tmpLabel.setPrefSize(20, 20);
                     tmpLabel.setStyle("-fx-background-color: red");
                     moeglicheWerteAuswahl[l][k] = tmpLabel;
@@ -114,7 +120,11 @@ public class Controller implements Initializable {
             }
 
             Label leeren = new Label("leeren");
-            leeren.setOnMouseReleased(mouseEvent -> modell.setzeEintrag(label.getId()," "));
+            leeren.setOnMouseReleased(mouseEvent ->
+            {
+                modell.setzeEintrag(label.getId()," ");
+                popupMoeglicheEintraege.hide();
+            });
             leeren.setStyle("-fx-background-color: red");
             gridPaneMoeglicheEintraege.add(leeren, 0, counter + 1);
             gridPaneMoeglicheEintraege.setColumnSpan(leeren, BREITE_SUBSPIELFELD);
@@ -128,6 +138,7 @@ public class Controller implements Initializable {
             if (!popupMoeglicheEintraege.isShowing()) {
                 popupMoeglicheEintraege.show(primaryStage);
             }
+
 
         });
         //label an textProperty binden.
