@@ -96,6 +96,7 @@ public class SudokuStandard {
         }
     }
 
+    
     /**
      * Berechne korrespondierende Felder
      */
