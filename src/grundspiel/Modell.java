@@ -4,22 +4,21 @@ import java.util.ArrayList;
 
 public class Modell {
 
-
-
-
     private SudokuEintrag[][] spielfeld;
     private SudokuStandard sudoku;
+    private Boolean subfeldGerade;
     public Modell() {
 
     }
     /**
      * erstellt ein neues Sudoku mit den eingegebenen Parametern.
      */
-    public void erstelleSudoku(int MAX_WERT,int BREITE_SUBSPIELFELD,int HOEHE_SUBSTIELFELD){
-        sudoku = new SudokuStandard(MAX_WERT,BREITE_SUBSPIELFELD,HOEHE_SUBSTIELFELD);
+    public void erstelleSudokuFeld(int BREITE_SUBSPIELFELD, int HOEHE_SUBSPIELFELD){
+        subfeldGerade =(HOEHE_SUBSPIELFELD %2==0);
+        sudoku = new SudokuStandard(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
         sudoku.erzeugeSpielfeld();
         spielfeld = sudoku.getSudokuSpielfeld();
-        sudoku.loeseSudoku();
+        //sudoku.loeseSudoku();
     }
 
     /**
@@ -45,5 +44,6 @@ public class Modell {
     public SudokuEintrag[][] getSpielfeld() {
         return spielfeld;
     }
+    public boolean isSubfeldgerade(){ return subfeldGerade;}
 
 }

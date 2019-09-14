@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -16,9 +17,8 @@ import static javafx.geometry.Pos.CENTER;
 
 public class Controller implements Initializable {
     Modell modell;
-    int MAX_WERT = 6;
-    int BREITE_SUBSPIELFELD = 3;
-    int HOEHE_SUBSPIELFELD = 2;
+    int BREITE_SUBSPIELFELD = 4;
+    int HOEHE_SUBSPIELFELD = 3;
     /**
      * hält die möglichen Einträge auf dem Popup.
      */
@@ -33,11 +33,13 @@ public class Controller implements Initializable {
     private Label[][] sudokuLabelArray;
     @FXML
     private Stage primaryStage;
+    @FXML
+    private ScrollPane scrollPane;
 
 
     public Controller(Stage primaryStage) {
         modell = new Modell();
-        modell.erstelleSudoku(MAX_WERT, BREITE_SUBSPIELFELD, HOEHE_SUBSPIELFELD);
+        modell.erstelleSudokuFeld(BREITE_SUBSPIELFELD, HOEHE_SUBSPIELFELD);
         this.primaryStage = primaryStage;
     }
 
@@ -52,32 +54,21 @@ public class Controller implements Initializable {
         label.setMinHeight(40);
         label.setMinWidth(40);
         label.setAlignment(CENTER);
-        if (modell.getSpielfeld()[i][j].getQuadrant() % 2 == 0) {
-            label.setStyle("-fx-background-color: white");
-        } else {
-            label.setStyle("-fx-background-color: #F3F3F3");
-        }
+//FIXME Jetzt werden alle Ungeraden gemarkert, sind trotzdem noch alle untereinander grau im subfeldgeradeFall.
+        label.setStyle(modell.getSpielfeld()[i][j].getFarbe());
 //Färbe Felder ein, wenn die Maus darüber fährt.
         label.setOnMouseEntered(e -> {
             ArrayList<int[]> koresspondierendeFelder = modell.berechneKorrespondierendeFelder(label.getId());
             for (int[] item : koresspondierendeFelder
             ) {
-                if (modell.getSpielfeld()[item[0]][item[1]].getQuadrant() % 2 == 0) {
-                    sudokuLabelArray[item[0]][item[1]].setStyle("-fx-background-color: #E1F7E1");
-                } else {
-                    sudokuLabelArray[item[0]][item[1]].setStyle("-fx-background-color: #B1F7B1");
-                }
+                sudokuLabelArray[item[0]][item[1]].setStyle(modell.getSpielfeld()[item[0]][item[1]].getFarbeHover());
             }
         });
         label.setOnMouseExited(e -> {
             ArrayList<int[]> koresspondierendeFelder = modell.berechneKorrespondierendeFelder(label.getId());
             for (int[] item : koresspondierendeFelder
             ) {
-                if (modell.getSpielfeld()[item[0]][item[1]].getQuadrant() % 2 == 0) {
-                    sudokuLabelArray[item[0]][item[1]].setStyle("-fx-background-color: white");
-                } else {
-                    sudokuLabelArray[item[0]][item[1]].setStyle("-fx-background-color: #F3F3F3");
-                }
+                sudokuLabelArray[item[0]][item[1]].setStyle(modell.getSpielfeld()[item[0]][item[1]].getFarbe());
             }
         });
 
@@ -86,7 +77,6 @@ public class Controller implements Initializable {
             Popup popupMoeglicheEintraege = new Popup();
             GridPane gridPaneMoeglicheEintraege = new GridPane();
             ArrayList<String> moeglicheEintraege = modell.getSpielfeld()[i][j].getMoeglicheEintraege();
-            //TODO Umschreiben, dass unsortierte Liste erlaubt und die Anzeige feste Positionen hat.
             int counter = 0;
             int wertEintragenEintrag = 1;
             if (BREITE_SUBSPIELFELD < HOEHE_SUBSPIELFELD) {
@@ -111,7 +101,8 @@ public class Controller implements Initializable {
                     }
 
                     tmpLabel.setPrefSize(20, 20);
-                    tmpLabel.setStyle("-fx-background-color: red");
+                    tmpLabel.setStyle("-fx-background-color: #0000FF60;-fx-border-color: black");
+                    tmpLabel.setAlignment(CENTER);
                     moeglicheWerteAuswahl[l][k] = tmpLabel;
                     gridPaneMoeglicheEintraege.add(moeglicheWerteAuswahl[l][k], l, k);
                     wertEintragenEintrag++;
@@ -125,11 +116,10 @@ public class Controller implements Initializable {
                 modell.setzeEintrag(label.getId()," ");
                 popupMoeglicheEintraege.hide();
             });
-            leeren.setStyle("-fx-background-color: red");
-            gridPaneMoeglicheEintraege.add(leeren, 0, counter + 1);
+            leeren.setStyle("-fx-background-color: #0000FF60;-fx-border-color: black");
+            gridPaneMoeglicheEintraege.add(leeren, 0, counter + 1,1,BREITE_SUBSPIELFELD);
             gridPaneMoeglicheEintraege.setColumnSpan(leeren, BREITE_SUBSPIELFELD);
-            leeren.setPrefSize(60, 20);
-            gridPaneMoeglicheEintraege.setGridLinesVisible(true);
+            leeren.setPrefSize(20*BREITE_SUBSPIELFELD, 20);
             popupMoeglicheEintraege.getContent().add(gridPaneMoeglicheEintraege);
             popupMoeglicheEintraege.setAutoHide(true);
             Point2D position = label.localToScene(0, 0);
@@ -138,10 +128,7 @@ public class Controller implements Initializable {
             if (!popupMoeglicheEintraege.isShowing()) {
                 popupMoeglicheEintraege.show(primaryStage);
             }
-
-
         });
-        //label an textProperty binden.
         label.textProperty().bind(modell.getSpielfeld()[i][j].getEintragPoperty());
         return label;
     }
@@ -162,7 +149,11 @@ public class Controller implements Initializable {
 
             }
         }
-        primaryPane.add(sudokuGridPane, 0, 2);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setContent(sudokuGridPane);
+        primaryStage.sizeToScene();
+
 
 
     }

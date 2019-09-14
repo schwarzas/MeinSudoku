@@ -28,6 +28,14 @@ public class SudokuEintrag {
     private ArrayList<String> moeglicheEintraege;
 
     /**
+     * Farbe, in der das Feld angezeigt wird.
+     */
+    private String farbe;
+    /**
+     * Farbe, in der das Feld angezeigt wird, wenn die Maus darüber hovert.
+     */
+    private String farbeHover;
+    /**
      * Konstruktur, SpielEntität wird mit einem leeren Feld erzeugt und or
      */
     @Contract(pure = true)
@@ -77,5 +85,15 @@ public class SudokuEintrag {
     public ArrayList<String> getMoeglicheEintraege() {
         return moeglicheEintraege;
     }
+
+    public String getFarbe(){return farbe;}
+
+    public void setFarbe (String farbe){
+        this.farbe=farbe;
+    }
+
+    public String getFarbeHover() {return farbeHover;}
+
+    public void setFarbeHover(String farbeHover) {this.farbeHover = farbeHover;}
 }
 
