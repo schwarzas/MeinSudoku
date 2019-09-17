@@ -2,10 +2,9 @@ package grundspiel;
 
 
 import java.util.ArrayList;
-import java.util.Random;
-
+import java.util.Collections;
 public class SudokuStandard {
-    private Random rd = new Random();
+
     /**
      * Hält das Spielfeld
      */
@@ -42,52 +41,52 @@ public class SudokuStandard {
      * Die Anzahl der Felder untereinander ist die SubfeldBREITE. offsets speichert die Verschiebung der jeweiligen
      * ID der einzelnen Felder, damit diese richtig zugeordnet werden.
      */
-    public void erzeugeSpielfeld(){
+    public void erzeugeSpielfeldLeer(){
         freieFelder = MAX_WERT * MAX_WERT;
         sudokuSpielfeld = new SudokuEintrag[MAX_WERT][MAX_WERT];
         int quadrant;
-        int[] offsets=new int[BREITE_SUBSPIELFELD];
+        int[] offsets=new int[HOEHE_SUBSPIELFELD];
         offsets[0]=0;
-        offsets[1]=(HOEHE_SUBSPIELFELD-1);
+        offsets[1]=(BREITE_SUBSPIELFELD-1);
         for (int i = 2; i < offsets.length ; i++) {
             offsets[i]=offsets[1]*i;
         }
         for (int i = 0; i < MAX_WERT; i++) {
             for (int j = 0; j < MAX_WERT; j++) {
-                sudokuSpielfeld[j][i] = new SudokuEintrag(MAX_WERT);
-                quadrant = (i/HOEHE_SUBSPIELFELD)+(j/BREITE_SUBSPIELFELD)+offsets[i/HOEHE_SUBSPIELFELD];
-                sudokuSpielfeld[j][i].setQuadrant(quadrant);
-                sudokuSpielfeld[j][i].setEintrag((" "));
-                if(HOEHE_SUBSPIELFELD%2==0){
-                    if(((int)quadrant/HOEHE_SUBSPIELFELD)%2==0){
+                sudokuSpielfeld[i][j] = new SudokuEintrag(MAX_WERT);
+                quadrant = (i/BREITE_SUBSPIELFELD)+(j/HOEHE_SUBSPIELFELD)+offsets[i/BREITE_SUBSPIELFELD];
+                sudokuSpielfeld[i][j].setQuadrant(quadrant);
+                sudokuSpielfeld[i][j].setEintrag((" "));
+                if(BREITE_SUBSPIELFELD%2==0){
+                    if(((int)quadrant/BREITE_SUBSPIELFELD)%2==0){
                         if(quadrant%2==0){
-                            sudokuSpielfeld[j][i].setFarbe("-fx-background-color: white");
-                            sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #E1F7E1");
+                            sudokuSpielfeld[i][j].setFarbe("-fx-background-color: white");
+                            sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #E1F7E1");
                         }
                         else {
-                            sudokuSpielfeld[j][i].setFarbe("-fx-background-color: #F3F3F3");
-                            sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #B1F7B1");
+                            sudokuSpielfeld[i][j].setFarbe("-fx-background-color: #F3F3F3");
+                            sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #B1F7B1");
                         }
                     }
                     else{
                         if(quadrant%2==0){
-                            sudokuSpielfeld[j][i].setFarbe("-fx-background-color: #F3F3F3");
-                            sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #B1F7B1");
+                            sudokuSpielfeld[i][j].setFarbe("-fx-background-color: #F3F3F3");
+                            sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #B1F7B1");
                         }
                         else{
-                            sudokuSpielfeld[j][i].setFarbe("-fx-background-color: white");
-                            sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #E1F7E1");
+                            sudokuSpielfeld[i][j].setFarbe("-fx-background-color: white");
+                            sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #E1F7E1");
                         }
                     }
 
                 } else {
                     if(quadrant%2==0){
-                        sudokuSpielfeld[j][i].setFarbe("-fx-background-color: white");
-                        sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #E1F7E1");
+                        sudokuSpielfeld[i][j].setFarbe("-fx-background-color: white");
+                        sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #E1F7E1");
                     }
                     else {
-                        sudokuSpielfeld[j][i].setFarbe("-fx-background-color: #F3F3F3");
-                        sudokuSpielfeld[j][i].setFarbeHover("-fx-background-color: #B1F7B1");
+                        sudokuSpielfeld[i][j].setFarbe("-fx-background-color: #F3F3F3");
+                        sudokuSpielfeld[i][j].setFarbeHover("-fx-background-color: #B1F7B1");
                         }
                 }
             }
@@ -97,22 +96,18 @@ public class SudokuStandard {
      * Setzt den Eintrag in das Eintragsfeld mit der übergebenen id. Ebenfalls löscht die Methode den Eintrag aus den
      * moeglichen Einträgen der korespondierenden Eintragsfeldern.
      * @param neuerEintrag der neue Eintrag für das Feld.
-     * @param id    die Position des Feldes anhand der LabelID.
+     * @param i,j    die Position des Feldes.
      */
-    public void setzeEintrag(String id, String neuerEintrag){
-        String[] tmp = id.split(",");
-        int zeile = Integer.parseInt(tmp[0]);
-        int spalte = Integer.parseInt(tmp[1]);
-        String alterEintrag = sudokuSpielfeld[zeile][spalte].getEintrag();
-        sudokuSpielfeld[zeile][spalte].setEintrag(neuerEintrag);
+    public void setzeEintrag(int i, int j, String neuerEintrag){
+        String alterEintrag = sudokuSpielfeld[i][j].getEintrag();
+        sudokuSpielfeld[i][j].setEintrag(neuerEintrag);
         if(alterEintrag.equals(" ")){
             freieFelder--;
         }
         if (neuerEintrag.equals(" ")){
             freieFelder++;
         }
-
-        for (int[] item:berechneKorrespondierendeFelder(zeile,spalte)) {
+        for (int[] item:berechneKorrespondierendeFelder(i,j)) {
             if(!neuerEintrag.equals(" ")){
                 sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().remove(neuerEintrag);
             }
@@ -121,14 +116,34 @@ public class SudokuStandard {
             }
         }
     }
-
-    public void setzeZahlenAufDiagonale(){
-        ArrayList<String> diagonalEinträge = new ArrayList<>();
+//FIXME Ansatz ist Müll
+    private void setzeZahlenAufDiagonale(){
+        ArrayList<String> diagonalEintraege = new ArrayList<>();
         for (int i = 1; i <=MAX_WERT ; i++) {
-            diagonalEinträge.add(i+"");
+            diagonalEintraege.add(i+"");
         }
-        //TODO Subfelder auf den unkorrelierten Subfeldern (Diagonalen) setzen.
+        int subfeldHoeheStart=0;
+        int subfeldBreiteStart=0;
+        int faktor=1;
+        int diagonalEintraegeIndex;
+        while (subfeldBreiteStart<MAX_WERT && subfeldHoeheStart <MAX_WERT){
+            //Fülle ein Diagonalsubfeld
+            Collections.shuffle(diagonalEintraege);
+            diagonalEintraegeIndex=0;
+            for (int i = subfeldBreiteStart; i < BREITE_SUBSPIELFELD*faktor; i++) {
+                for (int j = subfeldHoeheStart; j < HOEHE_SUBSPIELFELD*faktor ; j++) {
+                    setzeEintrag(i,j,diagonalEintraege.get(diagonalEintraegeIndex));
+                    diagonalEintraegeIndex++;
+                }
+            }
+            faktor++;
+            subfeldHoeheStart+=HOEHE_SUBSPIELFELD;
+            subfeldBreiteStart+=BREITE_SUBSPIELFELD;
+        }
+
+
     }
+
 
 
     /**
@@ -159,23 +174,18 @@ public class SudokuStandard {
         }
         return felder;
     }
-
-    //FIXME backtracing umsetzen
-    public void loeseSudoku(){
-        int x;
-        int y;
-        while(freieFelder>=( MAX_WERT * MAX_WERT -10)){
-            x = (rd.nextInt(MAX_WERT));
-            y = (rd.nextInt(MAX_WERT));
-            if(sudokuSpielfeld[x][y].getEintrag().equals(" ")){
-                int laenge = sudokuSpielfeld[x][y].getMoeglicheEintraege().size();
-                String tmp = sudokuSpielfeld[x][y].getMoeglicheEintraege().get(rd.nextInt(laenge));//wenn nur eine Zahl geht
-                setzeEintrag(x+","+y,tmp);
-            }
-        }
-
+    public void erstelleSudoku(){
+        setzeZahlenAufDiagonale();
     }
 
+    //FIXME backtracing umsetzen
+    public Boolean loeseSudokuBacktracking(){
+
+
+        return false;
+    }
+//GETTER SETTER
     public SudokuEintrag[][] getSudokuSpielfeld() { return sudokuSpielfeld;}
 
+    public int getFreieFelder(){ return freieFelder;}
 }

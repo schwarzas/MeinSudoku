@@ -6,7 +6,6 @@ public class Modell {
 
     private SudokuEintrag[][] spielfeld;
     private SudokuStandard sudoku;
-    private Boolean subfeldGerade;
     public Modell() {
 
     }
@@ -14,10 +13,10 @@ public class Modell {
      * erstellt ein neues Sudoku mit den eingegebenen Parametern.
      */
     public void erstelleSudokuFeld(int BREITE_SUBSPIELFELD, int HOEHE_SUBSPIELFELD){
-        subfeldGerade =(HOEHE_SUBSPIELFELD %2==0);
         sudoku = new SudokuStandard(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
-        sudoku.erzeugeSpielfeld();
+        sudoku.erzeugeSpielfeldLeer();
         spielfeld = sudoku.getSudokuSpielfeld();
+        sudoku.erstelleSudoku();
         //sudoku.loeseSudoku();
     }
 
@@ -27,7 +26,11 @@ public class Modell {
      * @param neuerEintrag Der Eintrag, der gesetzt werden soll
      */
     public void setzeEintrag(String id,String neuerEintrag){
-        sudoku.setzeEintrag(id,neuerEintrag);
+        String[] position = id.split(",");
+        sudoku.setzeEintrag(Integer.parseInt(position[0]),Integer.parseInt(position[1]),neuerEintrag);
+    }
+    public void setzeEintrag(int i, int j, String neuerEintrag){
+        sudoku.setzeEintrag(i,j, neuerEintrag);
     }
 
     /**
@@ -39,11 +42,14 @@ public class Modell {
         String[] position = id.split(",");
         return sudoku.berechneKorrespondierendeFelder(Integer.parseInt(position[0]),Integer.parseInt(position[1]));
     }
+
+    public Boolean istgeloest(){
+        return sudoku.getFreieFelder()==0;
+    }
 //Getter
 
     public SudokuEintrag[][] getSpielfeld() {
         return spielfeld;
     }
-    public boolean isSubfeldgerade(){ return subfeldGerade;}
 
 }
