@@ -10,6 +10,8 @@
 
         <Button fx:id="neuesSpiel" onAction="#buttonNeuesSpiel" prefWidth="100" text="neues Spiel"
                 GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Button fx:id="loeseBacktracking" onAction="#buttonLoeseBacktracking" prefWidth="100" text="Löse Backtracking"
+                GridPane.rowIndex="0" GridPane.columnIndex="1"/>
         <Label fx:id="gesagtes" prefWidth="200" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         <ScrollPane fx:id="scrollPane" GridPane.columnIndex="0" GridPane.rowIndex="2" fitToHeight="true" fitToWidth="true"
         />

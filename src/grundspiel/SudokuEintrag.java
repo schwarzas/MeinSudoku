@@ -4,8 +4,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
-
 public class SudokuEintrag {
     /**
      * Eintrag, der auf das Feld gesetzt ist.
@@ -23,11 +21,6 @@ public class SudokuEintrag {
      */
     private int quadrant;
     /**
-     * enthält die Einträge, die das Feld regelkonform zu diesem Zeitpunkt annehmen kann.
-     */
-    private ArrayList<String> moeglicheEintraege;
-
-    /**
      * Farbe, in der das Feld angezeigt wird.
      */
     private String farbe;
@@ -41,11 +34,6 @@ public class SudokuEintrag {
     @Contract(pure = true)
     public SudokuEintrag(int groesterWert) {
         eintragKonstant = false;
-        moeglicheEintraege = new ArrayList<>();
-        for (int i = 1; i <= groesterWert; i++) {
-            moeglicheEintraege.add(Integer.toString(i));
-
-        }
     }
 
     //Getter und Setter
@@ -80,10 +68,6 @@ public class SudokuEintrag {
 
     public void setEintragProperty(final StringProperty eintrag){
         this.eintrag=eintrag;
-    }
-
-    public ArrayList<String> getMoeglicheEintraege() {
-        return moeglicheEintraege;
     }
 
     public String getFarbe(){return farbe;}

@@ -32,10 +32,7 @@ public class SudokuStandard {
         this.BREITE_SUBSPIELFELD=BREITE_SUBSPIELFELD;
         this.HOEHE_SUBSPIELFELD=HOEHE_SUBSPIELFELD;
         MAX_WERT=BREITE_SUBSPIELFELD*HOEHE_SUBSPIELFELD;
-
-
     }
-
     /**
      * Hier wird das Standardspielfeld erzeugt. Wichtig: Die Anzahl der Subfelder nebeneinander ist die SubfeldHÖHE.
      * Die Anzahl der Felder untereinander ist die SubfeldBREITE. offsets speichert die Verschiebung der jeweiligen
@@ -92,31 +89,19 @@ public class SudokuStandard {
             }
         }
     }
+
     /**
      * Setzt den Eintrag in das Eintragsfeld mit der übergebenen id. Ebenfalls löscht die Methode den Eintrag aus den
      * moeglichen Einträgen der korespondierenden Eintragsfeldern.
      * @param neuerEintrag der neue Eintrag für das Feld.
      * @param i,j    die Position des Feldes.
      */
-    public void setzeEintrag(int i, int j, String neuerEintrag){
-        String alterEintrag = sudokuSpielfeld[i][j].getEintrag();
+
+    public void setzeEintrag(int i, int j, String neuerEintrag) {
         sudokuSpielfeld[i][j].setEintrag(neuerEintrag);
-        if(alterEintrag.equals(" ")){
-            freieFelder--;
-        }
-        if (neuerEintrag.equals(" ")){
-            freieFelder++;
-        }
-        for (int[] item:berechneKorrespondierendeFelder(i,j)) {
-            if(!neuerEintrag.equals(" ")){
-                sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().remove(neuerEintrag);
-            }
-            if(!alterEintrag.equals(" ")){
-                sudokuSpielfeld[item[0]][item[1]].getMoeglicheEintraege().add(alterEintrag);
-            }
-        }
     }
-//FIXME Ansatz ist Müll
+
+//FIXME Ansatz ist Müll für 2x2
     private void setzeZahlenAufDiagonale(){
         ArrayList<String> diagonalEintraege = new ArrayList<>();
         for (int i = 1; i <=MAX_WERT ; i++) {
@@ -178,14 +163,7 @@ public class SudokuStandard {
         setzeZahlenAufDiagonale();
     }
 
-    //FIXME backtracing umsetzen
-    public Boolean loeseSudokuBacktracking(){
-
-
-        return false;
-    }
 //GETTER SETTER
     public SudokuEintrag[][] getSudokuSpielfeld() { return sudokuSpielfeld;}
-
     public int getFreieFelder(){ return freieFelder;}
 }
