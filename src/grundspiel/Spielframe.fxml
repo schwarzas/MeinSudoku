@@ -1,20 +1,41 @@
 <!-- Kommentar -->
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane
           xmlns:fx="http://javafx.com/fxml" alignment="center" fx:id="primaryPane"
           prefHeight="20" prefWidth="20" >
     <children>
+        <HBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <children>
+                <GridPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                    <Label fx:id="gesagtes" prefWidth="200" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                </GridPane>
+            </children>
+        </HBox>
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2">
+            <children>
+                <GridPane>
+                    <Button fx:id="neuesLeeresSpiel" onAction="#buttonNeuesLeeresSpiel" prefWidth="150" text="leeres Spielfeld"
+                            GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Button fx:id="loeseBacktracking" onAction="#buttonLoeseBacktracking" prefWidth="150" text="Löse Backtracking"
+                            GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Button fx:id="neuesSudoku" onAction="#buttonParameterAendern" prefWidth="150" text="Parameter ändern"
+                            GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <Button fx:id="neuesSpiel" onAction="#buttonNeuesSpiel" prefWidth="150" text="neues Spiel"
+                            GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <Button fx:id="hilfeeinstellungen" onAction="#buttonHilfeEinstellungen" prefWidth="150"
+                            text="Hilfe Einstellungen"
+                            GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <Button fx:id="pause" onAction="#pause" prefWidth="150" text="Pause"
+                            GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                    <Button fx:id="Notizen" onAction="#notizenModus" prefWidth="150" text="Notizenmodus"
+                            GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                    <Label text="Hier könnte Ihre Werbung stehen!" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
 
-        <Button fx:id="neuesSpiel" onAction="#buttonNeuesSpiel" prefWidth="100" text="neues Spiel"
-                GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <Button fx:id="loeseBacktracking" onAction="#buttonLoeseBacktracking" prefWidth="100" text="Löse Backtracking"
-                GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-        <Label fx:id="gesagtes" prefWidth="200" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <ScrollPane fx:id="scrollPane" GridPane.columnIndex="0" GridPane.rowIndex="2" fitToHeight="true" fitToWidth="true"
+                </GridPane>
+            </children>
+        </VBox>
+        <ScrollPane fx:id="scrollPane" GridPane.columnIndex="0" GridPane.rowIndex="1" fitToHeight="true" fitToWidth="true"
         />
-
     </children>
 </GridPane>

@@ -13,11 +13,34 @@ public class Modell {
     /**
      * erstellt ein leeres Sudoku mit den eingegebenen Parametern.
      */
-    public void erstelleSudokuLeer(int BREITE_SUBSPIELFELD, int HOEHE_SUBSPIELFELD){
-        this.MAX_WERT=BREITE_SUBSPIELFELD*HOEHE_SUBSPIELFELD;
-        sudoku = new SudokuStandard(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
+    public void erstelleSudokuLeer(int BREITE_SUBSPIELFELD, int HOEHE_SUBSPIELFELD) {
+        this.MAX_WERT = BREITE_SUBSPIELFELD * HOEHE_SUBSPIELFELD;
+        sudoku = new SudokuStandard(BREITE_SUBSPIELFELD, HOEHE_SUBSPIELFELD);
         sudoku.erzeugeSpielfeldLeer();
         spielfeld = sudoku.getSudokuSpielfeld();
+    }
+
+    /**
+     * Leert das Spielfeld, indem alle Zahlen gelöscht werden und die Felder als nicht konstant gesetzt werden.
+     */
+    public void leereFeld(){
+        for (SudokuEintrag[] eintrags:spielfeld
+             ) {
+            for (SudokuEintrag e : eintrags){
+                e.setEintrag(" ");
+                e.setEintragKonstant(false);
+            }
+        }
+    }
+    /**
+     * erzeugt ein spielbares Sudoku, indem es erst Zahlen setzt, dann das Sudoku löst und anschließend wieder Zahlen
+     * entfernt
+     */
+    public void erzeugeSpielbaresSudoku(){
+        leereFeld();
+        sudoku.setzeErsteZahlen();
+        //loeseSudokuBacktracking();
+
     }
 
     /**
@@ -91,7 +114,6 @@ public class Modell {
             String tmp = Integer.toString(i);
             if(istValide(zeile,spalte,tmp)) {
                 setzeEintrag(zeile, spalte, tmp);
-                System.out.println(zeile+"|"+spalte+"|"+tmp);
                 if (loeseSudokuBacktracking()) {
                     return true;
                 } else {
@@ -102,9 +124,6 @@ public class Modell {
         return false;
     }
 
-    public Boolean istgeloest(){
-        return sudoku.getFreieFelder()==0;
-    }
 
     //Getter
     public SudokuEintrag[][] getSpielfeld() {

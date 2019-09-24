@@ -4,8 +4,10 @@ package grundspiel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -17,9 +19,9 @@ import java.util.ResourceBundle;
 import static javafx.geometry.Pos.CENTER;
 
 public class Controller implements Initializable {
-    Modell modell;
-    int BREITE_SUBSPIELFELD;
-    int HOEHE_SUBSPIELFELD;
+    private Modell modell;
+    private int BREITE_SUBSPIELFELD;
+    private int HOEHE_SUBSPIELFELD;
     /**
      * hält die möglichen Einträge auf dem Popup.
      */
@@ -36,12 +38,13 @@ public class Controller implements Initializable {
     private Stage primaryStage;
     @FXML
     private ScrollPane scrollPane;
+    @FXML private Scene scene;
 //FIXME für das Testen verschiedener Szenarien.
     Testsudokus testsudokus;
     int[][] testsudoku;
     public Controller(Stage primaryStage) {
         HOEHE_SUBSPIELFELD=3;
-        BREITE_SUBSPIELFELD=2;
+        BREITE_SUBSPIELFELD=3;
         modell = new Modell();
         modell.erstelleSudokuLeer(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
         //FIXME Testmethoden
@@ -66,11 +69,58 @@ public class Controller implements Initializable {
 
         }
     }
-
-    public void buttonNeuesSpiel() {
+//buttons
+    public void buttonParameterAendern(){
+        gesagtes.setText("neue Parameter eingeben");
+        Label l = new Label( "Felder dürfen sich maximal ums eins unterscheiden");
+        Label felderNebeneinander = new Label("Felder nebeneinander");
+        Label felderUebereinander = new Label("Felder übereinander");
+        TextField felderNeben = new TextField();
+        felderNeben.setPrefWidth(30);
+        TextField felderUeber = new TextField();
+        felderUeber.setPrefWidth(30);
+        GridPane gp = new GridPane();
+        gp.add(l,0,0);
+        gp.add(felderNebeneinander,0,1);
+        gp.add(felderNeben,1,1);
+        gp.add(felderUebereinander,0,2);
+        gp.add(felderUeber,1,2);
+        Scene neueParameterScene = new Scene(gp,300,100);
+        Stage neueParameterStage = new Stage();
+        neueParameterStage.setOnCloseRequest(event ->{
+            System.out.println("Mache was Spektakuläres");
+            try {
+                int tmpueber = Integer.parseInt(felderUeber.getText());
+                int tmpneben = Integer.parseInt(felderNeben.getText());
+                if(tmpneben==tmpueber || tmpneben+1==tmpueber || tmpneben-1==tmpueber){
+                    if(1<tmpneben && tmpneben<5 && 1<tmpueber && tmpueber<5){
+                        HOEHE_SUBSPIELFELD=tmpneben;
+                        BREITE_SUBSPIELFELD=tmpueber;
+                        modell.erstelleSudokuLeer(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
+                        starte();
+                    }
+                    else {
+                        gesagtes.setText("Eingabe ungültig");
+                    }
+                }
+                else {
+                    gesagtes.setText("Eingabe ungültig");
+                }
+            }
+            catch (NumberFormatException e){
+                gesagtes.setText("Eingabe ungültig");
+            }
+        });
+        neueParameterStage.setTitle("neue Parameter eingeben");
+        neueParameterStage.setScene(neueParameterScene);
+        neueParameterStage.setX(primaryStage.getX()+100);
+        neueParameterStage.setY(primaryStage.getY()+100);
+        neueParameterStage.show();
+    }
+    public void buttonNeuesLeeresSpiel() {
         modell.erstelleSudokuLeer(BREITE_SUBSPIELFELD,HOEHE_SUBSPIELFELD);
-        spielStart();
-        gesagtes.setText("neues Spiel gestartet");
+        erzeugeSpielfeldLabelArray();
+        gesagtes.setText("Spielfeld geleert");
     }
     public void buttonLoeseBacktracking() {
         gesagtes.setText("Löse mit Backtracking");
@@ -81,6 +131,29 @@ public class Controller implements Initializable {
             gesagtes.setText("Hier die Lösung");
         }
     };
+    public void buttonNeuesSpiel() {
+        gesagtes.setText("erstelle neues Spiel");
+        modell.leereFeld();
+        modell.erzeugeSpielbaresSudoku();
+    }
+    public void buttonHilfeEinstellungen(){
+        System.out.println("noch nicht implementiert");
+    }
+    public void pause(){
+        System.out.println("Pause noch nicht implementiert");
+    }
+    public void notizenModus(){
+        System.out.println("Notizenmodus noch nicht implementiert");
+    }
+
+    /**
+     * erzeugt die einzelnen Labels des Spielfeldes anhand des Spielfeldes im Moddel
+     * @param i die Position des entsprechenden Eintrags im Modell und die Position in der das Label im Label[][]
+     *          gesetzt wird.
+     * @param j die Position des entsprechenden Eintrags im Modell und die Position in der das Label im Label[][]
+     *          gesetzt wird.
+     * @return das fertige Label.
+     */
     private Label erzeugeSpielEintragLabel(int i, int j) {
         Label label = new Label();
         label.setId(i + "," + j);
@@ -172,7 +245,8 @@ public class Controller implements Initializable {
     /**
      * Erstellt ein neues Spielfeld anhand eines vorhandenen Modells.
      */
-    private void spielStart(){
+    private void erzeugeSpielfeldLabelArray(){
+        sudokuLabelArray = new Label[modell.getSpielfeld().length][modell.getSpielfeld()[0].length];
         for (int i = 0; i < sudokuLabelArray.length; i++) {
             for (int j = 0; j < sudokuLabelArray[0].length; j++) {
                 sudokuLabelArray[i][j] = erzeugeSpielEintragLabel(i, j);
@@ -182,18 +256,20 @@ public class Controller implements Initializable {
             }
         }
     }
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    private void starte(){
         sudokuGridPane = new GridPane();
         sudokuGridPane.setHgap(2);
         sudokuGridPane.setVgap(2);
         sudokuGridPane.setGridLinesVisible(true);
-        sudokuLabelArray = new Label[modell.getSpielfeld().length][modell.getSpielfeld()[0].length];
-        spielStart();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setContent(sudokuGridPane);
+        erzeugeSpielfeldLabelArray();
         primaryStage.sizeToScene();
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        starte();
     }
 
 }

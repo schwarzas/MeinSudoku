@@ -15,7 +15,7 @@ public class Main extends Application {
         loader.setController(controller);
         Parent root = loader.load();
         primaryStage.setTitle("SudokuStandard");
-        primaryStage.setScene(new Scene(root, 650, 650));
+        primaryStage.setScene(new Scene(root, 800, 650));
         primaryStage.show();
 
 

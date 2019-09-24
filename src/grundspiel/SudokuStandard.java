@@ -3,6 +3,7 @@ package grundspiel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
 public class SudokuStandard {
 
     /**
@@ -102,31 +103,42 @@ public class SudokuStandard {
     }
 
 //FIXME Ansatz ist Müll für 2x2
-    private void setzeZahlenAufDiagonale(){
-        ArrayList<String> diagonalEintraege = new ArrayList<>();
-        for (int i = 1; i <=MAX_WERT ; i++) {
-            diagonalEintraege.add(i+"");
-        }
-        int subfeldHoeheStart=0;
-        int subfeldBreiteStart=0;
-        int faktor=1;
-        int diagonalEintraegeIndex;
-        while (subfeldBreiteStart<MAX_WERT && subfeldHoeheStart <MAX_WERT){
-            //Fülle ein Diagonalsubfeld
-            Collections.shuffle(diagonalEintraege);
-            diagonalEintraegeIndex=0;
-            for (int i = subfeldBreiteStart; i < BREITE_SUBSPIELFELD*faktor; i++) {
-                for (int j = subfeldHoeheStart; j < HOEHE_SUBSPIELFELD*faktor ; j++) {
-                    setzeEintrag(i,j,diagonalEintraege.get(diagonalEintraegeIndex));
-                    diagonalEintraegeIndex++;
-                }
+
+    /**
+     * setzt erste Zahlen für das jeweilige Sudoku entsprechend der Art. Für ein Standartsudoku werden die ersten Zahhlen
+     * auf die Hauptdiagonalen Quadranten gesetzt.
+     */
+    public void setzeErsteZahlen(){
+            ArrayList<String> diagonalEintraege = new ArrayList<>();
+            for (int i = 1; i <= MAX_WERT; i++) {
+                diagonalEintraege.add(i + "");
             }
-            faktor++;
-            subfeldHoeheStart+=HOEHE_SUBSPIELFELD;
-            subfeldBreiteStart+=BREITE_SUBSPIELFELD;
-        }
-
-
+            int subfeldHoeheStart = 0;
+            int subfeldBreiteStart = 0;
+            int diagonalEintraegeIterator;
+            int faktor=1;
+            /*im 4x4 kommt es zu unlösbaren Sudokus, wenn beide Diagonalen gesetzt werden, daher wird hier nur die Diagonale gesetzt.*/
+            if(MAX_WERT==4){
+                Collections.shuffle(diagonalEintraege);
+                for (int i = 0; i < MAX_WERT; i++) {
+                    setzeEintrag(i,i,diagonalEintraege.get(i));
+                }
+                return;
+            }
+            while (subfeldBreiteStart < MAX_WERT && subfeldHoeheStart < MAX_WERT) {
+                //Fülle ein Diagonalsubfeld
+                Collections.shuffle(diagonalEintraege);
+                diagonalEintraegeIterator = 0;
+                for (int i = subfeldBreiteStart; i < BREITE_SUBSPIELFELD * faktor; i++) {
+                    for (int j = subfeldHoeheStart; j < HOEHE_SUBSPIELFELD * faktor; j++) {
+                        setzeEintrag(i, j, diagonalEintraege.get(diagonalEintraegeIterator));
+                        diagonalEintraegeIterator++;
+                    }
+                }
+                faktor++;
+                subfeldHoeheStart += HOEHE_SUBSPIELFELD;
+                subfeldBreiteStart += BREITE_SUBSPIELFELD;
+            }
     }
 
 
@@ -159,9 +171,8 @@ public class SudokuStandard {
         }
         return felder;
     }
-    public void erstelleSudoku(){
-        setzeZahlenAufDiagonale();
-    }
+
+
 
 //GETTER SETTER
     public SudokuEintrag[][] getSudokuSpielfeld() { return sudokuSpielfeld;}
